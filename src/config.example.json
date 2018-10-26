@@ -1,0 +1,20 @@
+{
+    "author": "justin tian",
+    "root": ".",
+    "action": "./src",
+    "usage": "./src/usage",
+    "order": {
+        "<cmd name>": {
+            "<cmd alias>": [
+                "-h",
+                "--help"
+            ],
+            "<cmd param>": [
+                ""
+            ],
+            "<cmd option>": [
+                ""
+            ]
+        }
+    }
+}
