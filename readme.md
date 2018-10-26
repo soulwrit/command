@@ -12,37 +12,12 @@ Command parameter parsing for building cli applications
 
 ### [Features](#features)
 
-* The feature description ...
+* Command line parameter parsing
+* Configure the build command line application
 
 ### [Install](#install)
 
-This is a [Node.js](https://nodejs.org/en/) module available through the [npm registry](https://www.npmjs.com/).
-
-Before installing, download and install Node.js,This version must be greater than `8.8` or higher, and must be required.
-
-* [install node.js using n](https://github.com/tj/n)
-
-(Unfortunately n is not supported on Windows yet. If you're able to make it work, send in a pull request!)
-
-```sh
-  curl -L https://git.io/n-install | bash
-  n latest # n <version>
-```
-
-* [install node.js using nvm](https://github.com/creationix/nvm)
-
-For Windows, download [nvm-windows](https://github.com/coreybutler/nvm-windows/releases)
-And Others, To install or update nvm, you can use the install script using cURL:
-
-```sh
-  # use curl
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-
-  # use wget
-  wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-```
-
-Now, install and use this project
+[install node.js](https://github.com/tianlugang/docs/blob/master/en/installNodeJS.MD), Now, install and use this project
 
 ```sh
 
