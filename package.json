@@ -12,15 +12,12 @@
     "doc": "doc",
     "test": "test"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": {
     "name": "justin Tian",
     "email": "tianlugang0226@gmail.com"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "@writ/utils": "^1.0.1"
+    "@writ/utils": "^1.1.0"
   }
 }

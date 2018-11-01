@@ -1,17 +1,17 @@
 const pa = require('path');
-const { path, logger, arrify, ini } = require('@writ/utils')('ini', 'logger', 'arrify', 'path');
+const { logger, arrify } = require('@writ/utils')('logger', 'arrify', 'is');
 
 module.exports = class Command {
     constructor(paths) {
         const options = this.getOption(paths);
 
-        if(!options || !options.root) {
+        if(!options || !pa.isAbsolute(options.root)) {
             throw new Error('No corresponding project was found');
         }
 
-        this.pkgRoot = path.resolve(options.root);
-        this.docRoot = path.resolve(options.usage);
-        this.actRoot = path.resolve(options.action);
+        this.pkgRoot = options.root;
+        this.docRoot = pa.resolve(this.pkgRoot, options.usage);
+        this.actRoot = pa.resolve(this.pkgRoot, options.action);
 
         this.author = options.author;
         this.order = Object.assign({}, options.order);
@@ -29,11 +29,7 @@ module.exports = class Command {
 
         switch(typeof paths) {
             case 'string':
-                paths = paths.length ? path.resolve(paths) : pa.join(process.cwd(), '.fmrc.js');
-                if(pa.extname(paths) === '.ini') {
-
-                    return ini.parse(paths) || {};
-                }
+                paths = paths.length ? pa.resolve(this.pkgRoot, paths) : pa.join(this.pkgRoot, '.cmdrc.js');
                 return require(paths);
             case 'object':
                 return paths;

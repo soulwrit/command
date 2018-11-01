@@ -18,3 +18,4 @@
 coverage
 node_modules
 config/local
+package-lock.json
