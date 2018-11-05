@@ -5,7 +5,7 @@ class Command {
     constructor(paths) {
         const options = this.getOption(paths);
 
-        if(!options || !pa.isAbsolute(options.root)) {
+        if(!options) {
             throw new Error('No corresponding project was found');
         }
         
