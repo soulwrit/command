@@ -1,15 +1,15 @@
 const pa = require('path');
-const { logger, arrify } = require('@writ/utils')('logger', 'arrify', 'is');
+const { logger, arrify, getRootDir } = require('@writ/utils')('logger', 'arrify', 'get.root-dir');
 
-module.exports = class Command {
+class Command {
     constructor(paths) {
         const options = this.getOption(paths);
 
         if(!options || !pa.isAbsolute(options.root)) {
             throw new Error('No corresponding project was found');
         }
-
-        this.pkgRoot = options.root;
+        
+        this.pkgRoot = options.root || getRootDir();
         this.docRoot = pa.resolve(this.pkgRoot, options.usage);
         this.actRoot = pa.resolve(this.pkgRoot, options.action);
 
@@ -155,4 +155,7 @@ module.exports = class Command {
     invalid() {
         logger.warn('Invalid Processing Options');
     }
-};
+}
+
+
+module.exports = Command;
