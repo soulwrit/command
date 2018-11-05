@@ -1,6 +1,6 @@
 {
   "name": "@writ/command",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Command parameter parsing for building cli applications",
   "main": "./index.js",
   "keywords": [
