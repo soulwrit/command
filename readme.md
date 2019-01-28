@@ -20,9 +20,7 @@ Command parameter parsing for building cli applications
 [install node.js](https://github.com/tianlugang/docs/blob/master/en/installNodeJS.MD), Now, install and use this project
 
 ```sh
-
    npm install @writ/command
-
 ```
 
 ### [Usage](#usage)
@@ -30,12 +28,10 @@ Command parameter parsing for building cli applications
 1. Project Structure
 
    ```text
-      ├─ doc/          `build scripts`
+      ├─ doc/          `usage and intro files`
       ├─ src/          `source code`
       │  ├─ index.js   `entry points`
-      ├─ test/         `source code`
-      │  ├─ index.js   `test scripts`
-      ├─ .babelrc      `babel transform options`
+      ├─ test/         `test code`
       ├─ .gitignore    `git ignore`
       ├─ .eslintrc.js  `eslint format config`
       ├─ license       `agreement that`
@@ -48,6 +44,7 @@ Command parameter parsing for building cli applications
 ### [Change log](#changelog)
 
 * Founded in Wed, 24 Oct 2018 01:38:45 GMT
+* Add the test case, Mon, 28 Jan 2019 05:01:27 GMT
 
 ### [Resources](#resources)
 

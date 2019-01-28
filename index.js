@@ -5,10 +5,10 @@ class Command {
     constructor(paths) {
         const options = this.getOption(paths);
 
-        if(!options) {
+        if (!options) {
             throw new Error('No corresponding project was found');
         }
-        
+
         this.pkgRoot = options.root || getRootDir();
         this.docRoot = pa.resolve(this.pkgRoot, options.usage);
         this.actRoot = pa.resolve(this.pkgRoot, options.action);
@@ -23,11 +23,12 @@ class Command {
 
     // 获取参数
     getOption(paths) {
-        if(!paths) {
-            throw new Error('This Options is a must, And that should be a `ini` or `json` file or an `object`');
+        if (!paths) {
+            throw new Error('This Options is a must,\
+            And that should be a `ini` or `json` file or an `object`');
         }
 
-        switch(typeof paths) {
+        switch (typeof paths) {
             case 'string':
                 paths = paths.length ? pa.resolve(this.pkgRoot, paths) : pa.join(this.pkgRoot, '.cmdrc.js');
                 return require(paths);
@@ -44,26 +45,26 @@ class Command {
         this.emit();
     }
 
-    // 实行命令
+    // 执行行命令
     emit() {
         const { order, param } = this.runtime,
             paths = pa.normalize(this.actRoot + '/' + order + '.js');
 
         try {
             require.resolve(paths);
-        }catch(error) {
+        } catch (error) {
             throw error;
         }
         const fn = require(paths);
 
-        if(typeof fn === 'function') {
+        if (typeof fn === 'function') {
             fn.apply(this, param);
         }
     }
 
     // 解析参数
     parse(argv) {
-        if(argv.length) {
+        if (argv.length) {
             this.runtime.order = this.whoami(argv[0]) || this.runtime.order;
             this.runtime.param = this._parse(argv.slice(1));
         }
@@ -75,18 +76,18 @@ class Command {
     whoami(target, verbose = true) {
         const { order } = this;
 
-        for(const key in order) {
-            if(target === key) {
+        for (const key in order) {
+            if (target === key) {
                 this.runtime.enter = key;
 
                 return target;
             }
             const obj = order[key];
 
-            if(obj && typeof obj === 'object') {
+            if (obj && typeof obj === 'object') {
                 const alias = [].concat(obj.alias);
 
-                if(alias.indexOf(target) > -1) {
+                if (alias.indexOf(target) > -1) {
                     this.runtime.enter = target;
 
                     return key;
@@ -103,7 +104,7 @@ class Command {
         this.runtime.options = options;
         const sys = arrify(options.param);
 
-        if(sys.length && arr.length) {
+        if (sys.length && arr.length) {
             const obj = {},
                 index = [],
                 keys = [],
@@ -111,13 +112,13 @@ class Command {
                 regex = sys.map(v => new RegExp('^(' + v.split(/\s+/).join('|') + ')', 'i'));
 
             arr.forEach((val, idx) => {
-                if(flat.includes(val)) {
+                if (flat.includes(val)) {
                     index.push(idx);
-                    for(let i = 0; i < regex.length; i++) {
-                        if(regex[i].test(val)) {
+                    for (let i = 0; i < regex.length; i++) {
+                        if (regex[i].test(val)) {
                             const exec = /--(\w+)/g.exec(sys[i]);
 
-                            if(exec) {
+                            if (exec) {
                                 keys[index.length] = exec[1];
                                 break;
                             }
@@ -130,7 +131,7 @@ class Command {
             index.reduce((prev, curr, idx) => {
                 const key = keys[idx] ? keys[idx] : keys[idx + 1];
 
-                if(key) {
+                if (key) {
                     const vals = arr.slice(idx === 0 ? prev : prev + 1, curr);
 
                     obj[key] ? obj[key].push(...vals) : obj[key] = [...vals];
@@ -148,7 +149,7 @@ class Command {
     // 指令不存在
     notFound(name) {
         name && logger.warn(`'${name}' is not a built-in order, \
-        has been redirected to 'help', namely: fm help <param>`);
+        has been redirected to 'help', namely: <command-name> help <param>`);
     }
 
     // 无效的处理项目
