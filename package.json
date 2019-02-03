@@ -2,7 +2,7 @@
   "name": "@writ/command",
   "version": "2.0.0",
   "description": "Command parameter parsing for building cli applications",
-  "main": "./index.js",
+  "main": "./src",
   "keywords": [
     "Nodejs",
     "Cli",
