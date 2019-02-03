@@ -39,13 +39,13 @@
       └─ README.md     `说明文件`
    ```
 
-2. Usage
+2. 用例
 
-### [Change log](#changelog)
+### [日志](#changelog)
 
-* Founded in Wed, 24 Oct 2018 01:38:45 GMT
-* Add the test case, Mon, 28 Jan 2019 05:01:27 GMT
+* 2018/10/24 上午9:38:45, 该包发布
+* 2019/1/28 下午1:01:27, 添加测试模块
 
-### [Resources](#resources)
+### [资源](#resources)
 
 * [Node.js](https://nodejs.org/en/)
