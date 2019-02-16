@@ -12,6 +12,9 @@
     "doc": "doc",
     "test": "test"
   },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --recursive"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:tianlugang/command.git"
@@ -23,5 +26,9 @@
   "license": "MIT",
   "dependencies": {
     "@writ/utils": "^1.1.3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
   }
 }

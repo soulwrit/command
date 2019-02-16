@@ -1,0 +1,14 @@
+{
+    "root": ".",
+    "action": "./src",
+    "usage": "./src/usage",
+    "order": {
+        "help": {
+            "alias": [
+                "-h",
+                "--help"
+            ],
+            "param": []
+        }
+    }
+}

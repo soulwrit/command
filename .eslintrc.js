@@ -6,7 +6,7 @@ module.exports = {
     "allowImportExportEverywhere": false, // Import and export declarations can only appear at a program's top level.
     "codeFrame": false // Disable the code frame in the reporter. This is useful since some eslint formatters don't play well with it.
   },
-  "env": { // 指定环境
+  "env": {
     "node": true, // 启用Node.js环境
     "es6": true, // 启用 ES6 语法
     "browser": true
@@ -158,8 +158,8 @@ module.exports = {
             "after": false
           },
           "catch": {
-            "before": false,
-            "after": false
+            "before": true,
+            "after": true
           }
         }
       }

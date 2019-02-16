@@ -1,124 +1,155 @@
 const pa = require('path');
-const { logger, arrify, getRootDir } = require('@writ/utils')('logger', 'arrify', 'get.root-dir');
+const logger = require('@writ/utils/src/logger');
+const arrify = require('@writ/utils/src/arrify');
+const getRootDir = require('@writ/utils/src/get.root-dir');
+const typeif = require('@writ/utils/src/typeof');
+const getOptions = require('./get-options');
 
+/**
+ * @class Command
+ * @description support `SystemV`
+ * @property {string} root your `cli-project` root dir
+ * @property {string} docRoot command help infomation file dir
+ * @property {string} actRoot command handler file dir
+ * @property {object} usages  commamd help infomation
+ * @property {object} action  commamd handlers
+ * @property {object} orders  command set
+ * @property {object} runtime currently executing command's infomation
+ * @method start(argv<[array]>) start loader
+ * @method invalid() print invaild infomation
+ * @method whoami(enter<[string]>) find currently command's name
+ * @method parse(param<[array|*]>) parse currently command's options
+ */
 class Command {
-    constructor(paths) {
-        const options = this.getOption(paths);
 
-        if (!options) {
-            throw new Error('No corresponding project was found');
+    /**
+     * @param {object|string} options
+     * @param {string} options.root your `cli-project` root dir
+     * @param {string|object} options.action command handler, it is a dirname or an object
+     * @param {object} options.order command detail info
+     */
+    constructor(options) {
+        options = getOptions(options, this);
+        this.root = options.root || getRootDir();
+
+        switch(typeif(options.action)) {
+            case 'string':
+                this.actRoot = pa.resolve(this.root, options.action);
+                break;
+            case 'object':
+                this.action = options.action;
+                break;
+            default: break;
         }
 
-        this.pkgRoot = options.root || getRootDir();
-        this.docRoot = pa.resolve(this.pkgRoot, options.usage);
-        this.actRoot = pa.resolve(this.pkgRoot, options.action);
-
-        this.author = options.author;
-        this.order = Object.assign({}, options.order);
-
+        this.orders = Object.assign({}, options.order);
         this.runtime = {
-            order: 'help'
+            enter: null, // user's command name
+            input: null, // user's command opts
+            order: 'help', // match command name
+            prime: null, // currently command preset options
+            param: [] // match command opts
         };
     }
 
-    // 获取参数
-    getOption(paths) {
-        if (!paths) {
-            throw new Error('This Options is a must,\
-            And that should be a `ini` or `json` file or an `object`');
-        }
-
-        switch (typeof paths) {
-            case 'string':
-                paths = paths.length ? pa.resolve(this.pkgRoot, paths) : pa.join(this.pkgRoot, '.cmdrc.js');
-                return require(paths);
-            case 'object':
-                return paths;
-            default: break;
-        }
+    /**
+     * handle currently executing command's invalid options
+     * @public
+     */
+    invalid() {
+        logger.warn(`This command ${this.runtime.order} do not exsit processing options`);
     }
 
-    // 启动
+    /**
+     * start your `cli-project`
+     * @param {array<>} argv part of the `process.argv`
+     * @description you can fake the `process.argv`
+     * @public
+     */
     start(argv) {
-        argv = arrify(argv);
-        this.parse(argv);
-        this.emit();
-    }
+        argv = !argv || argv === process.argv ? process.argv.slice(2) : arrify(argv);
 
-    // 执行行命令
-    emit() {
-        const { order, param } = this.runtime,
-            paths = pa.normalize(this.actRoot + '/' + order + '.js');
-
-        try {
-            require.resolve(paths);
-        } catch (error) {
-            throw error;
-        }
-        const fn = require(paths);
-
-        if (typeof fn === 'function') {
-            fn.apply(this, param);
-        }
-    }
-
-    // 解析参数
-    parse(argv) {
-        if (argv.length) {
-            this.runtime.order = this.whoami(argv[0]) || this.runtime.order;
-            this.runtime.param = this._parse(argv.slice(1));
+        if(argv.length) {
+            this.runtime.enter = argv[0];
+            this.runtime.input = argv.slice(1);
+            this.runtime.order = this.whoami() || this.runtime.order;
+            this.runtime.prime = this.orders[this.runtime.order];
+            this.runtime.param = this.parse();
         }
 
-        return this;
-    }
+        let handler;
+        const { order, param } = this.runtime;
 
-    // 查找命令
-    whoami(target, verbose = true) {
-        const { order } = this;
-
-        for (const key in order) {
-            if (target === key) {
-                this.runtime.enter = key;
-
-                return target;
+        if(this.action && Reflect.has(this.action, order)) {
+            handler = this.action[order];
+        } else if(this.actRoot) {
+            const paths = pa.normalize(this.actRoot + '/' + order + '.js');
+            try {
+                require.resolve(paths);
+            } catch (error) {
+                throw error;
             }
-            const obj = order[key];
+            handler = require(paths);
+        }
 
-            if (obj && typeof obj === 'object') {
+        if(typeof handler === 'function') {
+            handler.apply(this, param);
+        } else {
+            logger.erro(`This command ${order} do not exsit handler.`);
+        }
+    }
+
+    /**
+     * look for currently executing command
+     * @param {string} enter find command's name
+     * @public
+     */
+    whoami(enter) {
+        const { orders } = this;
+        enter = enter || this.runtime.enter;
+
+        for(const key in orders) {
+            if(enter === key) {
+                return key;
+            }
+            const obj = orders[key];
+
+            if(obj && typeof obj === 'object') {
                 const alias = [].concat(obj.alias);
 
-                if (alias.indexOf(target) > -1) {
-                    this.runtime.enter = target;
-
+                if(alias.indexOf(enter) > -1) {
                     return key;
                 }
             }
         }
-        verbose && this.notFound(target);
+
+        logger.warn(`'${enter}' is not a built-in command, has been redirected to 'help', namely: <command> help [param]`);
     }
 
-    _parse(arr) {
-        const { order } = this.runtime,
-            options = this.order[order];
+    /**
+     * parse currently executing command options
+     * @param {array|*} param command options
+     * @public
+     */
+    parse(param) {
+        const input = this.runtime.input;
+        param = arrify(param || this.runtime.prime.param);
 
-        this.runtime.options = options;
-        const sys = arrify(options.param);
+        if(param.length && input.length) {
+            const obj = {};
+            const index = [];
+            const keys = [];
+            const flat = param.join(' ').split(/\s+/);
+            const regex = param.map(v => new RegExp('^(' + v.split(/\s+/).join('|') + ')', 'i'));
 
-        if (sys.length && arr.length) {
-            const obj = {},
-                index = [],
-                keys = [],
-                flat = sys.join(' ').split(/\s+/),
-                regex = sys.map(v => new RegExp('^(' + v.split(/\s+/).join('|') + ')', 'i'));
-
-            arr.forEach((val, idx) => {
-                if (flat.includes(val)) {
+            input.forEach((val, idx) => {
+                if(flat.includes(val)) {
                     index.push(idx);
-                    for (let i = 0; i < regex.length; i++) {
-                        if (regex[i].test(val)) {
-                            const exec = /--(\w+)/g.exec(sys[i]);
+                    for(let i = 0; i < regex.length; i++) {
+                        if(regex[i].test(val)) {
+                            const exec = /--(\w+)/g.exec(param[i]);
 
-                            if (exec) {
+                            if(exec) {
                                 keys[index.length] = exec[1];
                                 break;
                             }
@@ -127,12 +158,12 @@ class Command {
                 }
             });
 
-            index.push(arr.length);
+            index.push(input.length);
             index.reduce((prev, curr, idx) => {
                 const key = keys[idx] ? keys[idx] : keys[idx + 1];
 
-                if (key) {
-                    const vals = arr.slice(idx === 0 ? prev : prev + 1, curr);
+                if(key) {
+                    const vals = input.slice(idx === 0 ? prev : prev + 1, curr);
 
                     obj[key] ? obj[key].push(...vals) : obj[key] = [...vals];
                 }
@@ -143,20 +174,8 @@ class Command {
             return [obj];
         }
 
-        return arr;
-    }
-
-    // 指令不存在
-    notFound(name) {
-        name && logger.warn(`'${name}' is not a built-in order, \
-        has been redirected to 'help', namely: <command-name> help <param>`);
-    }
-
-    // 无效的处理项目
-    invalid() {
-        logger.warn('Invalid Processing Options');
+        return input;
     }
 }
-
 
 module.exports = Command;
