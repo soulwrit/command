@@ -1,4 +1,4 @@
-# @soul/command
+# @writ/command
 
 Mime, Command parameter parsing for building cli applications.
 [中文](./doc/README-zh.md)
