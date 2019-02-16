@@ -1,0 +1,23 @@
+{
+  "name": "@writ/command-example",
+  "version": "1.0.0",
+  "description": "my command cli example",
+  "main": "index.js",
+  "bin": {
+    "use-object": "./bin/use-profile",
+    "use-profile": "./bin/use-profile"
+  },
+  "scripts": {
+    "object": "node ./bin/use-object",
+    "profile": "node ./bin/use-profile",
+    "function": "node ./bin/use-function"
+  },
+  "keywords": [],
+  "author": {
+    "name": "tianlugang"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@writ/command": "file:.."
+  }
+}
