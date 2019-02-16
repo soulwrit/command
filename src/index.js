@@ -9,9 +9,7 @@ const getOptions = require('./get-options');
  * @class Command
  * @description support `SystemV`
  * @property {string} root your `cli-project` root dir
- * @property {string} docRoot command help infomation file dir
  * @property {string} actRoot command handler file dir
- * @property {object} usages  commamd help infomation
  * @property {object} action  commamd handlers
  * @property {object} orders  command set
  * @property {object} runtime currently executing command's infomation
