@@ -1,7 +1,7 @@
 # @soul/command
 
-Command parameter parsing for building cli applications.
-[中文](./doc/README-zh.md)
+Mime, Command parameter parsing for building cli applications.
+[中文](./doc/readme-zh.md)
 
 ## Table of Contents
 
@@ -41,11 +41,80 @@ Command parameter parsing for building cli applications.
    ```
 
 2. Usage
+   [You can see my example here](./example)
+   * Configuration using `function` types, You can do some work in the functions
+
+   ```javascript
+      #! /usr/bin/env node
+      const Command = require('@writ/command');
+
+      new Command(function(command) {
+         return require('../.clirc');
+      }).start();
+   ```
+
+   * Configuration using `object` types
+
+   ```javascript
+      #! /usr/bin/env node
+      const Command = require('@writ/command');
+
+      new Command({
+         root: '.',
+         order: {
+            help: {
+                  param: [],
+                  alias: ['h', '-h']
+            },
+            version: {
+                  alias: [
+                     'v',
+                     'V',
+                     '-v',
+                     '--version'
+                  ]
+            }
+         },
+         action: {
+            help: require('../src/help'),
+            version: require('../src/version')
+         }
+      }).start();
+   ```
+
+   * Configuration using `string` types
+
+   ```javascript
+      #! /usr/bin/env node
+
+      const Command = require('../../src');
+      new Command('../example/.clirc.js').start();
+   ```
+
+3. Options [example](./example/.clirc.js)
+
+   * `options.root`[string] your `cli-app` root dir
+   * `options.action`[string|object] command handler, it is a dirname or an object
+   * `options.order`[object] command detail info
+
+4. API intro
+   In each `action`, `this` always points to your `Command` instances, So, you can use `Command's` methods and properties in each `action`.
+
+   * `root`[string] your `cli-app's` root dir
+   * `actRoot`[string] command handler file dir
+   * `action`[object] commamd handlers
+   * `orders`[object] command set
+   * `runtime`[object] currently executing command's infomation
+   * start(argv<[array]>)   start loader
+   * whoami(enter<[string]>) find currently command's name
+   * parse(param<[array|*]>) parse currently command's options
+   * invalid() print invaild infomation
 
 ### [Change log](#changelog)
 
 * Founded in Wed, 24 Oct 2018 01:38:45 GMT
 * Add the test case, Mon, 28 Jan 2019 05:01:27 GMT
+* Add usage, Sat, 16 Feb 2019 04:07:42 GMT
 
 ### [Resources](#resources)
 
