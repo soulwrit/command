@@ -134,41 +134,30 @@ class Command {
         input = arrify(input || this.runtime.input);
 
         if(param.length && input.length) {
+            const keys = genKey(param);
             const obj = {};
-            const index = [];
-            const keys = [];
-            const flat = param.join(' ').split(/\s+/);
-            const regex = param.map(v => new RegExp('^(' + v.split(/\s+/).join('|') + ')', 'i'));
 
-            input.forEach((val, idx) => {
-                if(flat.includes(val)) {
-                    index.push(idx);
-                    for(let i = 0; i < regex.length; i++) {
-                        if(regex[i].test(val)) {
-                            console.log(regex[i]);
-                            const exec = /--(\w+)/g.exec(param[i]);
+            for(let key, tmp, arr = [], i = 0, value; i < input.length; i++) {
+                value = input[i];
+                tmp = getKey(keys, value);
 
-                            if(exec) {
-                                keys[index.length] = exec[1];
-                                break;
-                            }
-                        }
+                if(tmp) {
+                    key = tmp;
+                    obj[key] = obj[key] || [];
+
+                    if(arr) {
+                        obj[key].push(...arr);
+                        arr = null;
                     }
-                }
-            });
-
-            index.push(input.length);
-            index.reduce((prev, curr, idx) => {
-                const key = keys[idx] ? keys[idx] : keys[idx + 1];
-
-                if(key) {
-                    const vals = input.slice(idx === 0 ? prev : prev + 1, curr);
-
-                    obj[key] ? obj[key].push(...vals) : obj[key] = [...vals];
+                    continue;
                 }
 
-                return curr;
-            }, 0);
+                if(obj[key]) {
+                    obj[key].push(value);
+                } else {
+                    arr.push(value);
+                }
+            }
 
             return [obj];
         }
@@ -178,3 +167,28 @@ class Command {
 }
 
 module.exports = Command;
+
+function genKey(array) {
+    const key = {};
+    const blank = /\s+/;
+
+    array.forEach(value => {
+        const temp = value.split(blank);
+        temp.forEach(item => {
+            key[item] = temp[0];
+        });
+    });
+
+    return key;
+}
+
+function getKey(key, str) {
+    // const reg = /^-[A-Za-z0-9]+$/;
+    str = key[str];
+    if(str) {
+        str = str.replace(/^(\.|-|_|\+|\||\\|\/|\s|=)+/, '');
+        return str.trim().replace(/(\.|-|_|\+|\||\\|\/|\s|=)+\w/g, function(m) {
+            return m.slice(-1).toUpperCase();
+        });
+    }
+}

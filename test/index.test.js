@@ -52,7 +52,7 @@ describe('Command', () => {
     it('`Command`.parse - has param', () => {
         let error;
         try {
-            command.start(['ex', '--all', 'hello', 'world', '!', '--b', 'busty', 'gril', '-mn']);
+            command.start(['ex', '--all', 'hello', 'world', '!', '-b', 'busty', 'gril', '-mn']);
             expect(command.runtime.order).equals('example');
 
             const param = command.parse(['--bail', 'hello', 'china', '!']);
@@ -61,9 +61,13 @@ describe('Command', () => {
             const obj = param[0];
             assert.isArray(obj.bail);
             assert.deepEqual(obj.bail, ['hello', 'china', '!']);
+
+            command.start(['ex', 'this', 'is', '--all', '-a', 'a', '--bail',
+                'do', 'you', 'understand', '--all', 'parameter', '--bail', '?', '-a', '.']);
         } catch (err) {
             error = err;
         }
+
         assert.isUndefined(error);
     });
 });

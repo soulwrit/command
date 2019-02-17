@@ -15,7 +15,6 @@ Mime, Command parameter parsing for building cli applications.
 
 * elegant command line parameter parsing
 * configure the build command line application
-* support `SystemV`
 
 ### [Install](#install)
 
@@ -97,6 +96,45 @@ Mime, Command parameter parsing for building cli applications.
    * `options.root`[string] your `cli-app` root dir
    * `options.action`[string|object] command handler, it is a dirname or an object
    * `options.order`[object] command detail info
+
+      ```javascript
+         // for example: 
+         module.exports = {
+            root: '.',
+            action: {
+               example(param) {
+                     if (param.all) {
+                        process.stdout.write(`All: ${param.all.join(' ')}\n`);
+                     }
+                     if (param.bail) {
+                        process.stdout.write(`Bail: ${param.bail.join(' ')}\n`);
+                     }
+                     if (param.comment) {
+                        process.stdout.write(`Comment: ${param.comment.join(' ')}\n`);
+                     }
+               }
+            },
+            order: {
+               // Declare the 'example` subcommand
+               example: {
+                     // example's alias
+                     alias: [
+                        'ex',
+                        '-e'
+                     ],
+                     // command parameters, the rule is the '--' beginning refers to the full name of the parameter, the '-' beginning refers to the corresponding abbreviation
+                     // in a program, or will be converted to the full name, such as the '-a' convert 'param.all = []'
+                     param: [
+                        '--all -a',
+                        '--bail -b',
+                        '--comment -c'
+                     ]
+               }
+            }
+         }
+      ```
+
+      The above configuration implements a child command `<main-command-name> example param`, a command only `alias` and `param` two properties, and are currently only supports arrays, `param` statement for eachparamter in the code: `--<name> -<alias>`, all will be used in the corresponding `action`, referred to as "only to belong to convenient
 
 4. API intro
    In each `action`, `this` always points to your `Command` instances, So, you can use `Command's` methods and properties in each `action`.

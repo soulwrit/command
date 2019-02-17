@@ -14,7 +14,6 @@
 
 * 合理的命令行参数解析
 * 配置化、按需加载构建命令行应用程序
-* 支持`SystemV`
 
 ### [安装](#install)
 
@@ -96,6 +95,45 @@
    * `options.root`[string] 你的 `cli-app` 的根目录
    * `options.action`[string|object] 命令的处理函数集合, 可以是一个对象或者一个处理函数的文件夹
    * `options.order`[object] 命令集的详情，请参考示例
+
+      ```javascript
+         // 例如
+         module.exports = {
+            root: '.',
+            action: {
+               example(param) {
+                     if (param.all) {
+                        process.stdout.write(`All: ${param.all.join(' ')}\n`);
+                     }
+                     if (param.bail) {
+                        process.stdout.write(`Bail: ${param.bail.join(' ')}\n`);
+                     }
+                     if (param.comment) {
+                        process.stdout.write(`Comment: ${param.comment.join(' ')}\n`);
+                     }
+               }
+            },
+            order: {
+               // 声明 example 子命令
+               example: {
+                     // 命令的别名
+                     alias: [
+                        'ex',
+                        '-e'
+                     ],
+                     // 命令的参数, 规则是 ‘--’开头表示参数全称，‘-’开头表示对应的简称
+                     // 在程序中，简称将会转换为全称，例如 '-a' 转换为 'param.all=[]'
+                     param: [
+                        '--all -a',
+                        '--bail -b',
+                        '--comment -c'
+                     ]
+               }
+            }
+         }
+      ```
+
+      上述配置实现了一个子命令`<main-command-name> example [param]`, 一个命令只有`alias`与`param`两个属性, 且目前都只支持数组，`param`中每个参数的声明规约: `--<全称> -<简称>`，全程将用于对应的`action`,简称仅仅为了属于方便
 
 4. API 说明
    在每个 `action`中, `this` 总是指向你实例化的`Command`的示例, 因此, 你可以使用`Command's`的方法与属性在任何一个`action`中.

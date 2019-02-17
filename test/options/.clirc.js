@@ -8,7 +8,6 @@ module.exports = {
             process.stdout.write('...v1.0.0\n');
         },
         example(param) {
-            console.log(param);
             if (param.all) {
                 process.stdout.write(`All: ${param.all.join(' ')}\n`);
             }
@@ -41,11 +40,10 @@ module.exports = {
                 'ex'
             ],
             param: [
-                '--all --a',
-                '--bail --b',
-                '--comment --c',
-                '-m',
-                '-n'
+                '--all -a',
+                '--bail -b',
+                '--comment -c',
+                '--<name> -<alias>',
             ]
         }
     }
