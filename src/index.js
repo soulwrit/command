@@ -7,8 +7,7 @@ const getOptions = require('./get-options');
 
 /**
  * @class Command
- * @description support `SystemV`
- * @property {string} root your `cli-project` root dir
+ * @property {string} root your `cli-app` root dir
  * @property {string} actRoot command handler file dir
  * @property {object} action  commamd handlers
  * @property {object} orders  command set
@@ -16,13 +15,13 @@ const getOptions = require('./get-options');
  * @method start(argv<[array]>) start loader
  * @method invalid() print invaild infomation
  * @method whoami(enter<[string]>) find currently command's name
- * @method parse(param<[array|*]>) parse currently command's options
+ * @method parse(input<[array|*]>) parse currently command's options
  */
 class Command {
 
     /**
      * @param {object|string} options
-     * @param {string} options.root your `cli-project` root dir
+     * @param {string} options.root your `cli-app` root dir
      * @param {string|object} options.action command handler, it is a dirname or an object
      * @param {object} options.order command detail info
      */
@@ -121,17 +120,18 @@ class Command {
             }
         }
 
-        logger.warn(`'${enter}' is not a built-in command, has been redirected to 'help', namely: <command> help [param]`);
+        logger.warn(`'${enter}' is not a built-in command, Has been redirected to 'help', ` +
+            'namely: <command> help [param]');
     }
 
     /**
      * parse currently executing command options
-     * @param {array|*} param command options
+     * @param {array|*} input command options
      * @public
      */
-    parse(param) {
-        const input = this.runtime.input;
-        param = arrify(param || this.runtime.prime.param);
+    parse(input) {
+        const param = arrify(this.runtime.prime.param);
+        input = arrify(input || this.runtime.input);
 
         if(param.length && input.length) {
             const obj = {};
@@ -145,6 +145,7 @@ class Command {
                     index.push(idx);
                     for(let i = 0; i < regex.length; i++) {
                         if(regex[i].test(val)) {
+                            console.log(regex[i]);
                             const exec = /--(\w+)/g.exec(param[i]);
 
                             if(exec) {

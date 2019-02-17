@@ -1,7 +1,25 @@
 module.exports = {
     root: '.',
-    action: './src',
-    usage: './src/usage',
+    action: {
+        help() {
+            process.stdout.write('...look help infomation\n');
+        },
+        version() {
+            process.stdout.write('...v1.0.0\n');
+        },
+        example(param) {
+            console.log(param);
+            if (param.all) {
+                process.stdout.write(`All: ${param.all.join(' ')}\n`);
+            }
+            if (param.bail) {
+                process.stdout.write(`Bail: ${param.bail.join(' ')}\n`);
+            }
+            if (param.comment) {
+                process.stdout.write(`Comment: ${param.comment.join(' ')}\n`);
+            }
+        }
+    },
     order: {
         help: {
             alias: [
@@ -16,6 +34,18 @@ module.exports = {
                 'V',
                 '-v',
                 '--version'
+            ]
+        },
+        example: {
+            alias: [
+                'ex'
+            ],
+            param: [
+                '--all --a',
+                '--bail --b',
+                '--comment --c',
+                '-m',
+                '-n'
             ]
         }
     }

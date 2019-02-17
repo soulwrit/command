@@ -13,8 +13,9 @@ Mime, Command parameter parsing for building cli applications.
 
 ### [Features](#features)
 
-* Command line parameter parsing
-* Configure the build command line application
+* elegant command line parameter parsing
+* configure the build command line application
+* support `SystemV`
 
 ### [Install](#install)
 

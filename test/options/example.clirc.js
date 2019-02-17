@@ -1,7 +1,6 @@
 module.exports = {
     root: '.',
     action: './src',
-    usage: './src/usage',
     order: {
         help: {
             alias: [
