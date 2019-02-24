@@ -1,6 +1,6 @@
 # @soul/command
 
-我的，用于cli程序构建时的命令参数解析[english](../readme.md)
+我的，用于cli程序构建时的命令参数解析[english](./readme.md)
 
 ## 大纲
 
