@@ -2,7 +2,7 @@
   "name": "@writ/command",
   "version": "3.0.0",
   "description": "Command parameter parsing for building cli applications",
-  "main": "./src",
+  "main": "./index.js",
   "keywords": [
     "Nodejs",
     "Cli",
@@ -23,10 +23,7 @@
     "name": "justin Tian",
     "email": "tianlugang0226@gmail.com"
   },
-  "license": "MIT",
-  "dependencies": {
-    "@writ/utils": "^1.1.3"
-  },
+  "license": "MIT", 
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^5.2.0"

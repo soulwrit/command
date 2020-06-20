@@ -29,9 +29,8 @@ Mime, Command parameter parsing for building cli applications.
 1. Project Structure
 
    ```text
-      ├─ doc/          `usage and intro files`
-      ├─ src/          `source code`
-      │  ├─ index.js   `entry points`
+      ├─ example/      `usage examples`
+      ├─ index.js      `entry points`
       ├─ test/         `test code`
       ├─ .gitignore    `git ignore`
       ├─ .eslintrc.js  `eslint format config`

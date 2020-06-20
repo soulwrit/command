@@ -1,7 +1,6 @@
 {
     "root": ".",
-    "action": "./src",
-    "order": {
+    "command": {
         "help": {
             "alias": [
                 "-h",
@@ -17,5 +16,6 @@
                 "--version"
             ]
         }
-    }
+    },
+    "default": "help"
 }

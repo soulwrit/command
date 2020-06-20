@@ -1,7 +1,7 @@
 module.exports = {
     root: '.',
-    action: './src',
-    order: {
+    default: 'version',
+    command: {
         help: {
             alias: [
                 '-h',

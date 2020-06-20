@@ -1,19 +1,65 @@
 /* global describe,it, Symbol */
+const util = require('util');
+const path = require('path');
 const { expect, assert } = require('chai');
+const typeif = require('@writ/utils/src/typeof');
 
-const Command = require('../src');
+const Command = require('../');
 const options = require('./options/.clirc');
 
+function returnNonObject() { }
+function returnObject() {
+    return {};
+}
+
 describe('Command', () => {
-    it('`Command` is a function', () => {
-        expect(Command).is.an('function');
+    const invalidOptions = [1, '', null, undefined, [1], false, true, Symbol('any'), returnNonObject];
+    const invalidStrings = invalidOptions.map(v => util.inspect(v)).join(', ');
+
+    it('Incorrect options example: ' + invalidStrings, () => {
+        const optionsIsAnObject = 'Options is required, and must be an object';
+        invalidOptions.forEach(opts => {
+            try {
+                new Command(opts);
+            } catch (error) {
+                assert.strictEqual(error.message, optionsIsAnObject, 'options type is not correct.');
+            }
+        });
     });
 
-    it('`Command`.new', () => {
-        expect(new Command(options)).instanceOf(Command);
+    const vaildOptions = [
+        returnObject,
+        require('./options/.clirc'),
+        path.join(__dirname, './options/example.clirc.js'),
+        path.join(__dirname, './options/example.clirc.json')
+    ];
+    const vaildStrings = [
+        {
+            root: '.', action: './src',
+            usage: './src/usage',
+            order: {
+                help: {
+                    alias: ['h'],
+                    param: []
+                }
+            }
+        },
+        '$PATH/.clirc.js',
+        '$PATH/.clirc.json',
+        returnObject
+    ].map(v => '\n' + util.inspect(v)).join(',');
+
+    it('Correct example: ' + vaildStrings, () => {
+        vaildOptions.forEach(opts => {
+            expect(typeif(new Command(opts)) === 'object').true;
+        });
     });
 
     const command = new Command(options);
+
+    it('`Command` is a constructor', () => {
+        expect(command).is.an('function').instanceOf(Command);
+    });
 
     it('`Command.start`', () => {
         let error;

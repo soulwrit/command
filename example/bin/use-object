@@ -1,24 +1,5 @@
 #! /usr/bin/env node
-const Command = require('@writ/command');
+const Command = require('../..');
+const options = require('../command');
 
-new Command({
-    root: '.',
-    order: {
-        help: {
-            param: [],
-            alias: ['h', '-h']
-        },
-        version: {
-            alias: [
-                'v',
-                'V',
-                '-v',
-                '--version'
-            ]
-        }
-    },
-    action: {
-        help: require('../src/help'),
-        version: require('../src/version')
-    }
-}).start();
+new Command(options).start();
